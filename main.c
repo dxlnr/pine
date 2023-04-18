@@ -13,6 +13,29 @@ void fill(uint32_t *pixels, size_t height, size_t width, uint32_t color)
     }
 }
 
+/**
+ * Writes a rectangle to memory.
+ */
+void fill_rect(
+    uint32_t *p, 
+    size_t p_h, 
+    size_t p_w, 
+    int r_x, 
+    int r_y, 
+    size_t r_h, 
+    size_t r_w, 
+    uint32_t color
+) {
+    fill(p, p_h, p_w, 0xFFFFFFFF);
+
+    for (size_t i = 0; i < r_h; ++i) {
+        for (size_t j = 0; j < r_w; ++j) {
+            p[r_y*p_w + r_x + j + i*p_w] = color;
+        }
+    }
+
+}
+
 typedef int Errno;
 #define return_defer(value) do { res = (value); goto defer; } while (0)
 
@@ -47,7 +70,15 @@ defer:
 static uint32_t pixels[HEIGHT*WIDTH];
 
 int main() {
-    fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
-    save_to_ppm_file(pixels, HEIGHT, WIDTH, "canvas.ppm");
+    /* fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF); */
+    fill_rect(pixels, HEIGHT, WIDTH, 150, 200, 60, 100, 0xCC0000);
+
+    const char *fpath = "canvas.ppm";
+    Errno e = save_to_ppm_file(pixels, HEIGHT, WIDTH, fpath);
+    if (e) {
+        fprintf(stderr, "ERROR: unable to save file %s: %d\n", fpath, e);
+        return 1;
+    }
+
     return 0;
 }
