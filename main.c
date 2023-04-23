@@ -5,8 +5,8 @@
 
 #include "pine.h"
 
-#define WIDTH 800
-#define HEIGHT 800
+#define WIDTH 1280
+#define HEIGHT 960
 
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a > b) ? a : b; }
