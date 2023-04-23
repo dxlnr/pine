@@ -18,7 +18,7 @@ void fill(uint32_t *pixels, size_t height, size_t width, uint32_t color)
 }
 
 /**
- * Writes a rectangle to memory.
+ * Renders a rectangle in a specific color.
  */
 void fill_rect(uint32_t *p, size_t p_h, size_t p_w, 
                int r_x, 
@@ -41,34 +41,38 @@ void fill_rect(uint32_t *p, size_t p_h, size_t p_w,
 }
 
 /** 
- * Renders a triangle.
+ * Renders a line with specific color.
  */
-void fill_triangle(uint32_t *p, size_t p_h, size_t p_w,
+void fill_line(uint32_t *p, size_t h, size_t w,
                    int x1, int y1,
                    int x2, int y2,
-                   int x3, int y3,
                    uint32_t color) 
 {
-    double dpw = 1 / (double) p_w;
-    double dph = 1 / (double) p_h;
-
-    int y_min_12 = min(y1, y2);
-    int x_min_12 = min(x1, x2);
-    int y_max_12 = max(y1, y2);
-    int x_max_12 = max(x1, x2);
-
-    /* double x12 = x_max_12 - x_min_12; */
-    /* double y12 = y_max_12 - y_min_12; */
-    double x12 = (double) x2 - (double) x1;
-    double y12 = y2 - y1; 
-    double alpha = atan(x12/y12);
-    double dx12 = 0.0;
-
-    for (size_t i = 0; i < y12; ++i) {
-        int dy12 = y_min_12 + i;
-        if (0 <= y12 && y12 < dy12) {
-            double dx12 = dx12 + (1 * tan(alpha));
-            p[y_min_12*p_w + x_min_12 + (int) round(dx12) + i*p_w] = color;
+    double y;
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    
+    if (dx != 0) {
+        if (dx > 0) {
+            for (int x = x1; x < x2; ++x) {
+                y = y1 + dy * ((double) x - x1) / dx;
+                p[(int) y*w + x] = color;
+            }
+        } else {
+            for (int x = x2; x < x1; ++x) {
+                y = y1 + dy * ((double) x - x2) / dx * (-1);
+                p[(int) y*w + x] = color;
+            }
+        }
+    } else {
+        if (dy > 0) {
+            for (int y = y1; y < y2; ++y) {
+                p[y*w + x1] = color;
+            }
+        } else {
+            for (int y = y2; y < y1; ++y) {
+                p[y*w + x1] = color;
+            }
         }
     }
 }
@@ -111,8 +115,8 @@ int main() {
     fill(pixels, HEIGHT, WIDTH, 0x383838);
     // Draw a rectangle.
     fill_rect(pixels, HEIGHT, WIDTH, 150, 200, 60, 100, 0xFFFFFF);
-    // Draw a triangle.
-    fill_triangle(pixels, HEIGHT, WIDTH, 300, 300, 380, 400, 460, 500, 0xFFFFFF);
+    // Draw a line.
+    fill_line(pixels, HEIGHT, WIDTH, 400, 300, 400, 400, 0xFFFFFF);
 
     const char *fpath = "canvas.ppm";
     Errno e = save_to_ppm_file(pixels, HEIGHT, WIDTH, fpath);
