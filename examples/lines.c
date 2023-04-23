@@ -1,15 +1,14 @@
-#include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <errno.h>
 
 #include "pine.h"
 
 #define WIDTH 800
-#define HEIGHT 800
+#define HEIGHT 800 
 
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a > b) ? a : b; }
+static uint32_t pixels[HEIGHT*WIDTH];
 
 typedef int Errno;
 #define return_defer(value) do { res = (value); goto defer; } while (0)
@@ -42,34 +41,38 @@ defer:
     return res;
 }
 
-static uint32_t pixels[HEIGHT*WIDTH];
-
-int main() {
+bool draw_lines_example()
+{
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0x383838);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 0, 0, 100, 100, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 0, 0, 400, 400, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 100, 100, 200, 0, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 800, 0, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 200, 200, 100, 100, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 800, 800, 400, 400, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 100, 100, 0, 200, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 0, 800, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 100, 100, 200, 100, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 800, 400, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 0, 100, 100, 100, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 0, 400, 400, 400, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 100, 0, 100, 100, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 400, 0, 400, 400, 0xFFFFFF);
     // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 100, 100, 100, 200, 0xFFFFFF);
+    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 400, 800, 0xFFFFFF);
 
     const char *fpath = "canvas.ppm";
     Errno e = save_to_ppm_file(pixels, HEIGHT, WIDTH, fpath);
     if (e) {
         fprintf(stderr, "ERROR: unable to save file %s: %d\n", fpath, e);
-        return 1;
+        return 0;
     }
+    return 1;
+}
 
+int main() {
+    
+    if (!draw_lines_example()) return -1;
     return 0;
 }
