@@ -1,4 +1,5 @@
 *.o
 *.ppm
+*.png
 !tests/*.ppm
 pine

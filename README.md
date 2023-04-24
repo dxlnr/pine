@@ -9,3 +9,8 @@ For creating a render check the main file or the examples folder.
 ```bash
 make main && ./main
 ```
+
+### Additional Information 
+
+- [Fast, High-Quality Line Antialiasing by Prefiltering with an Optimal Cubic
+Polynomial](https://algo2.iti.kit.edu/wassenberg/LineAA/LineAA.pdf)
