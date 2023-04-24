@@ -4,15 +4,13 @@
 #include <errno.h>
 #include <string.h>
 
-#include "pine.h"
+#define PINE
+#include "pine.c"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 #define WIDTH 1280
 #define HEIGHT 960
-
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a > b) ? a : b; }
 
 typedef int Errno;
 #define return_defer(value) do { res = (value); goto defer; } while (0)
@@ -62,26 +60,8 @@ int main(int argc, char **argv) {
 
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
-    //
-    fill_rect(pixels, HEIGHT, WIDTH, 300, 300, 150, 100, 0x00FF0080);
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 0, 0, 100, 100, 0xAAFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 100, 100, 200, 0, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 200, 200, 100, 100, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 100, 100, 0, 200, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 100, 100, 200, 100, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 0, 100, 100, 100, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 100, 0, 100, 100, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line(pixels, HEIGHT, WIDTH, 100, 100, 100, 200, 0xFFFFFF); */
-    /* // Draw a line. */
-    /* draw_line_anti(pixels, HEIGHT, WIDTH, 350, 350, 450, 400, 0xFFFFFF); */
+    // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
     
     if (strcmp(ff, "png") == 0) {
         if (!stbi_write_png(fpath, WIDTH, HEIGHT, 4, pixels, sizeof(uint32_t)*WIDTH)) {
