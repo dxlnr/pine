@@ -14,3 +14,4 @@ make main && ./main
 
 - [Fast, High-Quality Line Antialiasing by Prefiltering with an Optimal Cubic
 Polynomial](https://algo2.iti.kit.edu/wassenberg/LineAA/LineAA.pdf)
+- [Bresenham's line algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)

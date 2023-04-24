@@ -173,8 +173,21 @@ void draw_line_aa(uint32_t *p, size_t h, size_t w,
                     int x2, int y2,
                     uint32_t color) 
 {
-    
 }
+/** 
+ * Renders a triangle with specific color.
+ */
+void draw_triangle(uint32_t *p, size_t h, size_t w,
+               int x1, int y1,
+               int x2, int y2,
+               int x3, int y3,
+               uint32_t color) 
+{ 
+    draw_line(p, h, w, x1, y1, x2, y2, color); 
+    draw_line(p, h, w, x1, y1, x3, y3, color); 
+    draw_line(p, h, w, x2, y2, x3, y3, color); 
+}
+
 /** 
  * Renders a triangle with specific color.
  */
@@ -184,92 +197,91 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                int x3, int y3,
                uint32_t color) 
 { 
-    int ty;
-    int ys;
+    /* int ty; */
+    /* int ys; */
 
-    // 21
-    int dx21 = x2 - x1;
-    int dy21 = y2 - y1;
+    /* // 21 */
+    /* int dx21 = x2 - x1; */
+    /* int dy21 = y2 - y1; */
 
-    int y21i = 1;
-    if (dy21 < 0) {
-        y21i = -1;
-        dy21 = -dy21;
-    }
-    int d21 = (2 * dy21) - dx21;
-    int y21 = y1;
+    /* int y21i = 1; */
+    /* if (dy21 < 0) { */
+    /*     y21i = -1; */
+    /*     dy21 = -dy21; */
+    /* } */
+    /* int d21 = (2 * dy21) - dx21; */
+    /* int y21 = y1; */
 
-    // 31
-    int dx31 = x3 - x1;
-    int dy31 = y3 - y1;
+    /* // 31 */
+    /* int dx31 = x3 - x1; */
+    /* int dy31 = y3 - y1; */
 
-    int y31i = 1;
-    if (dy31 < 0) {
-        y31i = -1;
-        dy31 = -dy31;
-    }
-    int d31 = (2 * dy31) - dx31;
-    int y31 = y1;
+    /* int y31i = 1; */
+    /* if (dy31 < 0) { */
+    /*     y31i = -1; */
+    /*     dy31 = -dy31; */
+    /* } */
+    /* int d31 = (2 * dy31) - dx31; */
+    /* int y31 = y1; */
 
     
-    int xe = x2;
+    /* int xe = x2; */
 
-    for (int x = x1; x < x2; ++x) {
-        for (int x21 = x; x21 < x3; ++x21) {
-            p[y21*w + x21] = color;
-        }
-        for (int x31 = x; x31 < x3; ++x31) {
-            p[y31*w + x31] = color;
-        }
-        // y values
-        if (d21 > 0) {
-            y21 = y21 + y21i;
-            d21 = d21 + (2 * (dy21 - dx21));
-        } else {
-            d21 = d21 + 2 * dy21;
-        }
-        if (d31 > 0) {
-            y31 = y31 + y31i;
-            d31 = d31 + (2 * (dy31 - dx31));
-        } else {
-            d31 = d31 + 2 * dy31;
-        }
+    /* for (int x = x1; x < x2; ++x) { */
+    /*     for (int x21 = x; x21 < x3; ++x21) { */
+    /*         p[y21*w + x21] = color; */
+    /*     } */
+    /*     for (int x31 = x; x31 < x3; ++x31) { */
+    /*         p[y31*w + x31] = color; */
+    /*     } */
+    /*     // y values */
+    /*     if (d21 > 0) { */
+    /*         y21 = y21 + y21i; */
+    /*         d21 = d21 + (2 * (dy21 - dx21)); */
+    /*     } else { */
+    /*         d21 = d21 + 2 * dy21; */
+    /*     } */
+    /*     if (d31 > 0) { */
+    /*         y31 = y31 + y31i; */
+    /*         d31 = d31 + (2 * (dy31 - dx31)); */
+    /*     } else { */
+    /*         d31 = d31 + 2 * dy31; */
+    /*     } */
         
-        ty = y31;
+    /*     ty = y31; */
 
-        /* // x values */
-        /* if (d32 > 0) { */
-        /*     xe21 = x + x32i; */
-        /*     d32 = d32 + (2 * (dx32 - dy32)); */
-        /* } else { */
-        /*     d32 = d32 + 2 * dx32; */
-        /* } */
-    } 
+    /*     /1* // x values *1/ */
+    /*     /1* if (d32 > 0) { *1/ */
+    /*     /1*     xe21 = x + x32i; *1/ */
+    /*     /1*     d32 = d32 + (2 * (dx32 - dy32)); *1/ */
+    /*     /1* } else { *1/ */
+    /*     /1*     d32 = d32 + 2 * dx32; *1/ */
+    /*     /1* } *1/ */
+    /* } */ 
 
-    int tx = x2;
+    /* int tx = x2; */
 
-    // t
+    /* // t */
 
-    // 32
-    int dx23 = x2 - x3;
-    int dy23 = y2 - y3;
+    /* // 32 */
+    /* int dx23 = x2 - x3; */
+    /* int dy23 = y2 - y3; */
 
-    int y23i = 1;
-    if (dy23 < 0) {
-        y23i = -1;
-        dy23 = -dy23;
-    }
-    int d23 = (2 * dy23) - dx23;
-    int y23 = y3;
+    /* int y23i = 1; */
+    /* if (dy23 < 0) { */
+    /*     y23i = -1; */
+    /*     dy23 = -dy23; */
+    /* } */
+    /* int d23 = (2 * dy23) - dx23; */
+    /* int y23 = y3; */
 
-    for (int x = x3; x > x2; --x) {
-        for (int x21 = x; x21 < x3; ++x21) {
-            p[y21*w + x21] = color;
-        }
-        for (int x31 = x; x31 < x3; ++x31) {
-            p[y31*w + x31] = color;
-        }
-    }
+    /* for (int x = x3; x > x2; --x) { */
+    /*     for (int x21 = x; x21 < x3; ++x21) { */
+    /*         p[y21*w + x21] = color; */
+    /*     } */
+    /*     for (int x31 = x; x31 < x3; ++x31) { */
+    /*         p[y31*w + x31] = color; */
+    /*     } */
+    /* } */
 }
-
 #endif
