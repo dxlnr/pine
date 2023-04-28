@@ -216,6 +216,8 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     int ys23;
     int ye23;
 
+
+    int x23;
     // Top triangle
 
     if (abs(y2 - y1) < abs(x2 - x1)) {
@@ -281,7 +283,7 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
             dx23 = -dx23;
         }
         int d23 = (2 * dx23) - dy23;
-        int x23 = xs23;
+        x23 = xs23;
 
         printf("test x = %d\n", x);
         printf("x = %d, ys = %d, ye = %d\n", x, ys, ye);
@@ -311,41 +313,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         }
 
     } else {
-        /* if (y1 > y2) { */
-        /*     xs = x2; */
-        /*     xe = x1; */
-        /*     ys = y2; */
-        /*     ye = y1; */
-        /* } else { */
-        /*     xs = x1; */
-        /*     xe = x2; */
-        /*     ys = y1; */
-        /*     ye = y2; */
-        /* } */
-        /* // */  
-        /* int dx = xe - xs; */
-        /* int dy = ye - ys; */
-
-        /* int xi = 1; */
-        /* if (dx < 0) { */
-        /*     xi = -1; */
-        /*     dx = -dx; */
-        /* } */
-        /* int d = (2 * dx) - dy; */
-        /* int x = xs; */
-
-        /* for (int y = ys; y < ye; ++y) { */
-        /*     p[y*w + x] = color; */
-        /*     if (d > 0) { */
-        /*         x = x + xi; */
-        /*         d = d + (2 * (dx - dy)); */
-        /*     } else { */
-        /*         d = d + 2 * dx; */
-        /*     } */
-        /* } */
-    /* } */
-    /* for (int y = yt; y < ym; ++y) { */
-
     }
 
     int xs13;
@@ -354,7 +321,10 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     int ye13;
 
     // Low triangle.
-    if (x1 > x3) {
+    //
+
+    // x13
+    if (y1 > y3) {
         xs13 = x3;
         xe13 = x1;
         ys13 = y3;
@@ -365,40 +335,57 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         ys13 = y1;
         ye13 = y3;
     }
-    //  
+    // 
     int dx13 = xe13 - xs13;
     int dy13 = ye13 - ys13;
 
-    int yi13 = 1;
-    if (dy13 < 0) {
-        yi13 = -1;
-        dy13 = -dy13;
+    int xi13 = -1;
+    if (dx13 < 0) {
+        xi13 = 1;
+        dx13 = -dx13;
     }
-    int d13 = (2 * dy13) - dx13;
+    int d13 = (2 * dx13) - dy13;
+
+    printf("xi13 = %d\n", xi13);
+
+
+    /* int x = xs; */
+    /* int yi13 = 1; */
+    /* if (dy13 < 0) { */
+    /*     yi13 = -1; */
+    /*     dy13 = -dy13; */
+    /* } */
+    /* int d13 = (2 * dy13) - dx13; */
     /* int y = ys; */
     int xl = xe;
 
-    /* printf("x = %d, y = %d, d = %d\n", x, ye, d); */
+    // x 23
+    //
+    /* printf("x = %d, y = %d, d = %d\n", x, ye, d); */ 
+    int dx23 = xe23 - xs23;
+    int dy23 = ye23 - ys23;
 
+    int xi23 = -1;
+    if (dx23 < 0) {
+        xi23 = 1;
+        dx23 = -dx23;
+    }
+    int d23 = (2 * dx23) - dy23;
+    x23 = xs23;
+
+    printf("xi23 = %d\n", xi23);
     int c2;
-    /* for (int y = ye; y < ys; ++y) { */
-    /*     c1 = 1; */
-    /*     while (d <= 0) { */
-    /*         d = d + 2 * dy; */
-    /*         c1 = c1 + 1; */
-    /*     } */
-    /*     d = d + (2* (dy - dx)); */
-    /*     x = x - c1; */
-    /*     printf("x = %d, y = %d, d = %d\n", x, ye, d); */
-    /*     p[y*w + x] = color; */
-    /* } */
 
     /* printf("test x = %d\n", x); */
-    /* printf("x = %d, ys = %d, ye = %d\n", x, ys, ye); */
-    for (int y = y3; y < ye; ++y) {
+    printf("x = %d, ys = %d, ye = %d\n", x1, y3, ye);
+    x23 = x3;
+    int x13 = x3;
+    for (int y = y3; y >= ys; --y) {
         for (int xx = x13; xx < x23; ++xx) {
             p[y*w + xx] = color;
         }
+
+        printf("(Low) x13 = %d, x23 = %d, y = %d\n", x13, x23, y);
         if (d13 > 0) {
             x13 = x13 + xi13;
             d13 = d13 + (2 * (dx13 - dy13));
