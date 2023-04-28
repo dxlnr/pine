@@ -61,7 +61,8 @@ int main(int argc, char **argv) {
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
     // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
+    /* draw_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000); */
+    fill_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
     
     if (strcmp(ff, "png") == 0) {
         if (!stbi_write_png(fpath, WIDTH, HEIGHT, 4, pixels, sizeof(uint32_t)*WIDTH)) {

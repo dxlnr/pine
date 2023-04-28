@@ -197,19 +197,197 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                int x3, int y3,
                uint32_t color) 
 { 
+    
+    /* // Set manually this has to be ordered automatically later. */
+    int xt = x2;
+    int xm = x1;
+    int xd = x3;
+    int yt = y2;
+    int ym = y1;
+    int yd = y3;
+
+    int xs;
+    int xe;
+    int ys;
+    int ye;
+
+    int xs23;
+    int xe23;
+    int ys23;
+    int ye23;
+
+    // Top triangle
+
+    if (abs(y2 - y1) < abs(x2 - x1)) {
+        if (x1 > x2) {
+            xs = x2;
+            xe = x1;
+            ys = y2;
+            ye = y1;
+        } else {
+            xs = x1;
+            xe = x2;
+            ys = y1;
+            ye = y2;
+        }
+        //  
+        int dx = xe - xs;
+        int dy = ye - ys;
+
+        int yi = 1;
+        if (dy < 0) {
+            yi = -1;
+            dy = -dy;
+        }
+        int d = (2 * dy) - dx;
+        /* int y = ys; */
+        int x = xe;
+
+        printf("x = %d, y = %d, d = %d\n", x, ye, d);
+
+        int c1;
+        /* for (int y = ye; y < ys; ++y) { */
+        /*     c1 = 1; */
+        /*     while (d <= 0) { */
+        /*         d = d + 2 * dy; */
+        /*         c1 = c1 + 1; */
+        /*     } */
+        /*     d = d + (2* (dy - dx)); */
+        /*     x = x - c1; */
+        /*     printf("x = %d, y = %d, d = %d\n", x, ye, d); */
+        /*     p[y*w + x] = color; */
+        /* } */
+
+        if (y2 > y3) {
+            xs23 = x3;
+            xe23 = x2;
+            ys23 = y3;
+            ye23 = y2;
+        } else {
+            xs23 = x2;
+            xe23 = x3;
+            ys23 = y2;
+            ye23 = y3;
+        }
+        //  
+        int dx23 = xe23 - xs23;
+        int dy23 = ye23 - ys23;
+
+        printf("test x = %d\n", x);
+        
+        int xi23 = 1;
+        if (dx23 < 0) {
+            xi23 = -1;
+            dx23 = -dx23;
+        }
+        int d23 = (2 * dx23) - dy23;
+        int x23 = xs23;
+
+        printf("test x = %d\n", x);
+        printf("x = %d, ys = %d, ye = %d\n", x, ys, ye);
+        for (int y = ye; y < ys; ++y) {
+            c1 = 1;
+            while (d <= 0) {
+                d = d + 2 * dy;
+                c1 = c1 + 1;
+            }
+            d = d + (2* (dy - dx));
+            x = x - c1;
+            printf("(1) x = %d, y = %d, d = %d\n", x, ye, d);
+            /* p[y*w + x] = color; */
+            
+            printf("(2) x23 = %d, y = %d, d23 = %d\n", x23, ye, d23);
+            /* p[y*w + x23] = color; */
+
+            for (int xx = x; xx < x23; ++xx) {
+                p[y*w + xx] = color;
+            }
+            if (d23 > 0) {
+                x23 = x23 + xi23;
+                d23 = d23 + (2 * (dx23 - dy23));
+            } else {
+                d23 = d23 + 2 * dx23;
+            }
+        }
+
+    } else {
+        /* if (y1 > y2) { */
+        /*     xs = x2; */
+        /*     xe = x1; */
+        /*     ys = y2; */
+        /*     ye = y1; */
+        /* } else { */
+        /*     xs = x1; */
+        /*     xe = x2; */
+        /*     ys = y1; */
+        /*     ye = y2; */
+        /* } */
+        /* // */  
+        /* int dx = xe - xs; */
+        /* int dy = ye - ys; */
+
+        /* int xi = 1; */
+        /* if (dx < 0) { */
+        /*     xi = -1; */
+        /*     dx = -dx; */
+        /* } */
+        /* int d = (2 * dx) - dy; */
+        /* int x = xs; */
+
+        /* for (int y = ys; y < ye; ++y) { */
+        /*     p[y*w + x] = color; */
+        /*     if (d > 0) { */
+        /*         x = x + xi; */
+        /*         d = d + (2 * (dx - dy)); */
+        /*     } else { */
+        /*         d = d + 2 * dx; */
+        /*     } */
+        /* } */
+    /* } */
+    /* for (int y = yt; y < ym; ++y) { */
+
+    }
+/*     // middle side. */ 
+/*     int dxm = xt - xm; */
+/*     int dym = yt - ym; */
+
+/*     int d = (2 * dym) - dxm; */
+/*     int xmi = 1; */
+/*     if (dym < 0) { */
+/*         xmi = -1; */
+/*         dym = -dym; */
+/*     } */
+/*     /1* int dm = (2 * dxm) - dym; *1/ */
+/*     printf("dxm = %d, dym = %d, xmi = %d, d = %d\n", dxm, dym, xmi, d); */
+/*     int x = xt; */
+
+/*     for (int y = yt; y < ym; ++y) { */
+/*         printf("x = %d, x3 = %d, dm = %d\n", x, x, d); */
+/*         for (int xm = x; xm < xt; ++xm) { */
+/*             p[y*w + xm] = color; */
+/*         } */
+/*         if (d > 0) { */
+/*             d = d + (2 * (dym - dxm)); */
+/*         } else { */
+/*             x = x + xmi; */
+/*             d = d + 2 * dym; */
+/*         } */
+/*     } */
+
     /* int ty; */
     /* int ys; */
 
     /* // 21 */
-    /* int dx21 = x2 - x1; */
-    /* int dy21 = y2 - y1; */
+    /* int dx = xt - xm; */
+    /* int dy = yt - ym; */
 
-    /* int y21i = 1; */
-    /* if (dy21 < 0) { */
-    /*     y21i = -1; */
-    /*     dy21 = -dy21; */
+    /* int yi = 1; */
+    /* if (dy < 0) { */
+    /*     yi = -1; */
+    /*     dy = -dy; */
     /* } */
-    /* int d21 = (2 * dy21) - dx21; */
+    /* int d = (2 * dy) - dx; */
+
     /* int y21 = y1; */
 
     /* // 31 */
