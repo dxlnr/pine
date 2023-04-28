@@ -191,20 +191,29 @@ void draw_triangle(uint32_t *p, size_t h, size_t w,
 /** 
  * Renders a triangle with specific color.
  */
-void fill_triangle(uint32_t *p, size_t h, size_t w,
+void fill_triangle_test(uint32_t *p, size_t h, size_t w,
                int x1, int y1,
                int x2, int y2,
                int x3, int y3,
                uint32_t color) 
 { 
     
-    /* // Set manually this has to be ordered automatically later. */
+    // Set manually this has to be ordered automatically later.
     int xt = x2;
     int xm = x1;
     int xd = x3;
     int yt = y2;
     int ym = y1;
     int yd = y3;
+    
+    int xstm;
+    int xetm;
+    int ystm;
+    int yetm;
+    int xstd;
+    int xetd;
+    int ystd;
+    int yetd;
 
     int xs;
     int xe;
@@ -215,11 +224,10 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     int xe23;
     int ys23;
     int ye23;
-
-
+    
     int x23;
-    // Top triangle
 
+    // Top triangle
     if (abs(y2 - y1) < abs(x2 - x1)) {
         if (x1 > x2) {
             xs = x2;
@@ -397,6 +405,281 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
             d23 = d23 + (2 * (dx23 - dy23));
         } else {
             d23 = d23 + 2 * dx23;
+        }
+    }
+}
+
+/** 
+ * Renders a triangle with specific color.
+ */
+void fill_triangle(uint32_t *p, size_t h, size_t w,
+               int x1, int y1,
+               int x2, int y2,
+               int x3, int y3,
+               uint32_t color) 
+{ 
+    
+    // Set manually this has to be ordered automatically later.
+    int xt = x2;
+    int xm = x1;
+    int xd = x3;
+    int yt = y2;
+    int ym = y1;
+    int yd = y3;
+
+    //  
+    int xstm;
+    int xetm;
+    int ystm;
+    int yetm;
+    int xstd;
+    int xetd;
+    int ystd;
+    int yetd;
+    int xsmd;
+    int xemd;
+    int ysmd;
+    int yemd;
+
+    // Top triangle
+    int ctm;
+    int dtm;
+    int xtm;
+    int dytm;
+    int dxtm;
+    int xitm;
+
+    int ctd;
+    int dtd;
+    int xtd;
+    int dytd;
+    int dxtd;
+    int xitd;
+
+    // Line from top to left middle.  
+    if (abs(yt - ym) < abs(xt - xm)) {
+        if (xm > xt) {
+            xstm = xt;
+            xetm = xm;
+            ystm = yt;
+            yetm = ym;
+        } else {
+            xstm = xm;
+            xetm = xt;
+            ystm = ym;
+            yetm = yt;
+        }
+        dxtm = xetm - xstm;
+        dytm = yetm - ystm;
+
+        if (dytm < 0) { dytm = -dytm; }
+        
+        dtm = (2 * dytm) - dxtm;
+    } else {
+        if (ym > yt) {
+            xstm = xt;
+            xetm = xm;
+            ystm = yt;
+            yetm = ym;
+        } else {
+            xstm = xm;
+            xetm = xt;
+            ystm = ym;
+            yetm = yt;
+        }
+        dxtm = xetm - xstm;
+        dytm = yetm - ystm;
+
+        xitm = 1;
+        if (dxtm < 0) {
+            xitm = -1;
+            dxtm = -dxtm;
+        }
+        dtm = (2 * dxtm) - dytm;
+    }
+    xtm = xt;
+
+    // Line from top to right middle (down point is used as reference).
+    if (abs(yt - yd) < abs(xt - xd)) {
+        if (xm > xt) {
+            xstd = xt;
+            xetd = xd;
+            ystd = yt;
+            yetd = yd;
+        } else {
+            xstd = xd;
+            xetd = xt;
+            ystd = yd;
+            yetd = yt;
+        }
+        dxtd = xetd - xstd;
+        dytd = yetd - ystd;
+
+        dtd = (2 * dytd) - dxtd;
+    } else {
+        if (ym > yt) {
+            xstd = xt;
+            xetd = xd;
+            ystd = yt;
+            yetd = yd;
+        } else {
+            xstd = xd;
+            xetd = xt;
+            ystd = yd;
+            yetd = yt;
+        }
+        dxtd = xetd - xstd;
+        dytd = yetd - ystd;
+
+        xitd = 1;
+        if (dxtd < 0) {
+            xitd = -1;
+            dxtd = -dxtd;
+        }
+        dtd = (2 * dxtd) - dytd;
+    }
+    xtd = xt;
+
+    // Main Loop for filling the top triangle.
+    for (int y = yt; y <= ym; ++y) {
+        // top middle left
+        if (abs(yt - ym) < abs(xt - xm)) {
+            ctm = 1;
+            while (dtm <= 0) {
+                dtm = dtm + 2 * dytm;
+                ctm = ctm + 1;
+            }
+            dtm = dtm + (2* (dytm - dxtm));
+            xtm = xtm - ctm;
+        } else {
+            if (dtm > 0) {
+                xtm = xtm + xitm;
+                dtm = dtm + (2 * (dxtm - dytm));
+            } else {
+                dtm = dtm + 2 * dxtm;
+            }
+        }
+        // top middle right.
+        if (abs(yt - yd) < abs(xt - xd)) {
+            ctd = 1;
+            while (dtd <= 0) {
+                dtd = dtd + 2 * dytd;
+                ctd = ctd + 1;
+            }
+            dtd = dtd + (2* (dytd - dxtd));
+            xtd = xtd - ctd;
+        } else {
+            if (dtd > 0) {
+                xtd = xtd + xitd;
+                dtd = dtd + (2 * (dxtd - dytd));
+            } else {
+                dtd = dtd + 2 * dxtd;
+            }
+        }
+        for (int x = xtm; x < xtd; ++x) {
+            p[y*w + x] = color;
+        }
+    }
+
+    // Low triangle.
+    int cmd;
+    int dmd;
+    int xmd;
+    int dymd;
+    int dxmd;
+    int ximd;
+
+    // Line from bottom to left middle.  
+    if (abs(ym - yd) < abs(xm - xd)) {
+        if (xd > xm) {
+            xsmd = xd;
+            xemd = xm;
+            ysmd = yd;
+            yemd = ym;
+        } else {
+            xsmd = xm;
+            xemd = xd;
+            ysmd = ym;
+            yemd = yd;
+        }
+        dxmd = xemd - xsmd;
+        dymd = yemd - ysmd;
+
+        if (dymd < 0) { dymd = -dymd; }
+        
+        dmd = (2 * dymd) - dxmd;
+    } else {
+        if (ym > yd) {
+            xsmd = xd;
+            xemd = xm;
+            ysmd = yd;
+            yemd = ym;
+        } else {
+            xsmd = xm;
+            xemd = xd;
+            ysmd = ym;
+            yemd = yd;
+        }
+        dxmd = xemd - xsmd;
+        dymd = yemd - ysmd;
+
+        ximd = -1;
+        if (dxmd < 0) {
+            ximd = 1;
+            dxmd = -dxmd;
+        }
+        dmd = (2 * dxmd) - dymd;
+    }
+    xmd = xd;
+    // Line from bottom to right middle (top point is used as reference).
+    if (abs(yt - yd) >= abs(xt - xd)) {
+        xitd = 1;
+        if (dxtd < 0) {
+            xitd = -1;
+            dxtd = -dxtd;
+        }
+    }
+
+    xtd = xd;
+    
+    // Main Loop for filling the top triangle.
+    for (int y = yd; y > ym; --y) {
+        // top middle left
+        if (abs(ym - yd) < abs(xm - xd)) {
+            cmd = 1;
+            while (dmd <= 0) {
+                dmd = dmd + 2 * dymd;
+                cmd = cmd + 1;
+            }
+            dmd = dmd + (2* (dymd - dxmd));
+            xmd = xmd - cmd;
+        } else {
+            if (dmd > 0) {
+                xmd = xmd + ximd;
+                dmd = dmd + (2 * (dxmd - dymd));
+            } else {
+                dmd = dmd + 2 * dxmd;
+            }
+        }
+        // top middle right.
+        if (abs(yt - yd) < abs(xt - xd)) {
+            ctd = 1;
+            while (dtd <= 0) {
+                dtd = dtd + 2 * dytd;
+                ctd = ctd + 1;
+            }
+            dtd = dtd + (2* (dytd - dxtd));
+            xtd = xtd - ctd;
+        } else {
+            if (dtd > 0) {
+                xtd = xtd + xitd;
+                dtd = dtd + (2 * (dxtd - dytd));
+            } else {
+                dtd = dtd + 2 * dxtd;
+            }
+        }
+        for (int x = xmd; x < xtd; ++x) {
+            p[y*w + x] = color;
         }
     }
 }
