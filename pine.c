@@ -7,15 +7,17 @@
 #include <errno.h>
 #include <math.h>
 
-
 double rlt(double r) { return 1.0014 + 0.0086 * r - 1.4886 * pow(r, 2) + 0.5344 * pow(r, 3); }
 
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a > b) ? a : b; }
 
-/* uint32_t intensify_pixel(double dist) { */
-/*     double alpha = 1 - pow((dist * 2 / 3), 2); */
-/* } */
+typedef struct {
+    uint32_t *pixels;
+    size_t width;
+    size_t height;
+    /* size_t stride; */
+} Pine_Canvas;
 
 void fill(uint32_t *pixels, size_t height, size_t width, uint32_t color)
 {
@@ -189,228 +191,7 @@ void draw_triangle(uint32_t *p, size_t h, size_t w,
 }
 
 /** 
- * Renders a triangle with specific color.
- */
-void fill_triangle_test(uint32_t *p, size_t h, size_t w,
-               int x1, int y1,
-               int x2, int y2,
-               int x3, int y3,
-               uint32_t color) 
-{ 
-    
-    // Set manually this has to be ordered automatically later.
-    int xt = x2;
-    int xm = x1;
-    int xd = x3;
-    int yt = y2;
-    int ym = y1;
-    int yd = y3;
-    
-    int xstm;
-    int xetm;
-    int ystm;
-    int yetm;
-    int xstd;
-    int xetd;
-    int ystd;
-    int yetd;
-
-    int xs;
-    int xe;
-    int ys;
-    int ye;
-
-    int xs23;
-    int xe23;
-    int ys23;
-    int ye23;
-    
-    int x23;
-
-    // Top triangle
-    if (abs(y2 - y1) < abs(x2 - x1)) {
-        if (x1 > x2) {
-            xs = x2;
-            xe = x1;
-            ys = y2;
-            ye = y1;
-        } else {
-            xs = x1;
-            xe = x2;
-            ys = y1;
-            ye = y2;
-        }
-        //  
-        int dx = xe - xs;
-        int dy = ye - ys;
-
-        int yi = 1;
-        if (dy < 0) {
-            yi = -1;
-            dy = -dy;
-        }
-        int d = (2 * dy) - dx;
-        /* int y = ys; */
-        int x = xe;
-
-        printf("x = %d, y = %d, d = %d\n", x, ye, d);
-
-        int c1;
-        /* for (int y = ye; y < ys; ++y) { */
-        /*     c1 = 1; */
-        /*     while (d <= 0) { */
-        /*         d = d + 2 * dy; */
-        /*         c1 = c1 + 1; */
-        /*     } */
-        /*     d = d + (2* (dy - dx)); */
-        /*     x = x - c1; */
-        /*     printf("x = %d, y = %d, d = %d\n", x, ye, d); */
-        /*     p[y*w + x] = color; */
-        /* } */
-
-        if (y2 > y3) {
-            xs23 = x3;
-            xe23 = x2;
-            ys23 = y3;
-            ye23 = y2;
-        } else {
-            xs23 = x2;
-            xe23 = x3;
-            ys23 = y2;
-            ye23 = y3;
-        }
-        //  
-        int dx23 = xe23 - xs23;
-        int dy23 = ye23 - ys23;
-
-        printf("test x = %d\n", x);
-        
-        int xi23 = 1;
-        if (dx23 < 0) {
-            xi23 = -1;
-            dx23 = -dx23;
-        }
-        int d23 = (2 * dx23) - dy23;
-        x23 = xs23;
-
-        printf("test x = %d\n", x);
-        printf("x = %d, ys = %d, ye = %d\n", x, ys, ye);
-        for (int y = ye; y < ys; ++y) {
-            c1 = 1;
-            while (d <= 0) {
-                d = d + 2 * dy;
-                c1 = c1 + 1;
-            }
-            d = d + (2* (dy - dx));
-            x = x - c1;
-            printf("(1) x = %d, y = %d, d = %d\n", x, ye, d);
-            /* p[y*w + x] = color; */
-            
-            printf("(2) x23 = %d, y = %d, d23 = %d\n", x23, ye, d23);
-            /* p[y*w + x23] = color; */
-
-            for (int xx = x; xx < x23; ++xx) {
-                p[y*w + xx] = color;
-            }
-            if (d23 > 0) {
-                x23 = x23 + xi23;
-                d23 = d23 + (2 * (dx23 - dy23));
-            } else {
-                d23 = d23 + 2 * dx23;
-            }
-        }
-
-    } else {
-    }
-
-    int xs13;
-    int xe13;
-    int ys13;
-    int ye13;
-
-    // Low triangle.
-    //
-
-    // x13
-    if (y1 > y3) {
-        xs13 = x3;
-        xe13 = x1;
-        ys13 = y3;
-        ye13 = y1;
-    } else {
-        xs13 = x1;
-        xe13 = x3;
-        ys13 = y1;
-        ye13 = y3;
-    }
-    // 
-    int dx13 = xe13 - xs13;
-    int dy13 = ye13 - ys13;
-
-    int xi13 = -1;
-    if (dx13 < 0) {
-        xi13 = 1;
-        dx13 = -dx13;
-    }
-    int d13 = (2 * dx13) - dy13;
-
-    printf("xi13 = %d\n", xi13);
-
-
-    /* int x = xs; */
-    /* int yi13 = 1; */
-    /* if (dy13 < 0) { */
-    /*     yi13 = -1; */
-    /*     dy13 = -dy13; */
-    /* } */
-    /* int d13 = (2 * dy13) - dx13; */
-    /* int y = ys; */
-    int xl = xe;
-
-    // x 23
-    //
-    /* printf("x = %d, y = %d, d = %d\n", x, ye, d); */ 
-    int dx23 = xe23 - xs23;
-    int dy23 = ye23 - ys23;
-
-    int xi23 = -1;
-    if (dx23 < 0) {
-        xi23 = 1;
-        dx23 = -dx23;
-    }
-    int d23 = (2 * dx23) - dy23;
-    x23 = xs23;
-
-    printf("xi23 = %d\n", xi23);
-    int c2;
-
-    /* printf("test x = %d\n", x); */
-    printf("x = %d, ys = %d, ye = %d\n", x1, y3, ye);
-    x23 = x3;
-    int x13 = x3;
-    for (int y = y3; y >= ys; --y) {
-        for (int xx = x13; xx < x23; ++xx) {
-            p[y*w + xx] = color;
-        }
-
-        printf("(Low) x13 = %d, x23 = %d, y = %d\n", x13, x23, y);
-        if (d13 > 0) {
-            x13 = x13 + xi13;
-            d13 = d13 + (2 * (dx13 - dy13));
-        } else {
-            d13 = d13 + 2 * dx13;
-        }
-        if (d23 > 0) {
-            x23 = x23 + xi23;
-            d23 = d23 + (2 * (dx23 - dy23));
-        } else {
-            d23 = d23 + 2 * dx23;
-        }
-    }
-}
-
-/** 
- * Renders a triangle with specific color.
+ * renders a triangle with specific color.
  */
 void fill_triangle(uint32_t *p, size_t h, size_t w,
                int x1, int y1,
@@ -418,16 +199,47 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                int x3, int y3,
                uint32_t color) 
 { 
+    int xt;
+    int yt;
+    int xm;
+    int ym;
+    int xd;
+    int yd;
     
-    // Set manually this has to be ordered automatically later.
-    int xt = x2;
-    int xm = x1;
-    int xd = x3;
-    int yt = y2;
-    int ym = y1;
-    int yd = y3;
-
-    //  
+    // define the top point.
+    if (y1 < y2 && y1 < y3) {
+        yt = y1;
+        xt = x1;
+    } else if (y2 < y1 && y2 < y3) {
+        yt = y2;
+        xt = x2;
+    } else {
+        yt = y3;
+        xt = x3;
+    }
+    // Define the lowest point.
+    if (y1 > y2 && y1 > y3) {
+        yd = y1;
+        xd = x1;
+    } else if (y3 > y1 && y3 > y2) {
+        yd = y3;
+        xd = x3;
+    } else {
+        yd = y2;
+        xd = x2;
+    }
+    // Define the middle left point.
+    if (x2 < x1 && x2 < x3) {
+        ym = y2;
+        xm = x2;
+    } else if (x3 < x1 && x3 < x2) {
+        ym = y3;
+        xm = x3;
+    } else {
+        ym = y1;
+        xm = x1;
+    }
+  
     int xstm;
     int xetm;
     int ystm;
@@ -542,6 +354,9 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     // Main Loop for filling the top triangle.
     for (int y = yt; y <= ym; ++y) {
+        for (int x = xtm; x < xtd; ++x) {
+            p[y*w + x] = color;
+        }
         // top middle left
         if (abs(yt - ym) < abs(xt - xm)) {
             ctm = 1;
@@ -575,9 +390,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
             } else {
                 dtd = dtd + 2 * dxtd;
             }
-        }
-        for (int x = xtm; x < xtd; ++x) {
-            p[y*w + x] = color;
         }
     }
 
@@ -644,6 +456,9 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     
     // Main Loop for filling the top triangle.
     for (int y = yd; y > ym; --y) {
+        for (int x = xmd; x < xtd; ++x) {
+            p[y*w + x] = color;
+        }
         // top middle left
         if (abs(ym - yd) < abs(xm - xd)) {
             cmd = 1;
@@ -677,9 +492,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
             } else {
                 dtd = dtd + 2 * dxtd;
             }
-        }
-        for (int x = xmd; x < xtd; ++x) {
-            p[y*w + x] = color;
         }
     }
 }

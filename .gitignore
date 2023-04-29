@@ -2,4 +2,4 @@
 *.ppm
 *.png
 !tests/*.ppm
-pine
+main
