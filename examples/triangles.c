@@ -1,14 +1,14 @@
-/* Drawing Lines */
+/* Drawing Triangles */
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <errno.h>
 
-#define PINE
+#define PINE_IMPLEMENTATION
 #include "../pine.c"
 
-#define WIDTH 800
-#define HEIGHT 800 
+#define WIDTH 1280
+#define HEIGHT 960 
 
 static uint32_t pixels[HEIGHT*WIDTH];
 
@@ -47,24 +47,20 @@ bool draw_lines_example()
 {
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0x383838);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 0, 0, 400, 400, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 800, 0, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 800, 800, 400, 400, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 0, 800, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 800, 400, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 0, 400, 400, 400, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 400, 0, 400, 400, 0xFFFFFF);
-    // Draw a line.
-    draw_line(pixels, HEIGHT, WIDTH, 400, 400, 400, 800, 0xFFFFFF);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 400, 350, 650, 150, 800, 300, 0x000000);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 100, 550, 200, 500, 300, 550, 0x000000);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 100, 900, 150, 580, 60, 600, 0x000000);
+    // Draw a triangle.
+    fill_triangle(pixels, HEIGHT, WIDTH, 400, 400, 500, 650, 400, 700, 0x000000);
 
-    const char *fpath = "canvas.ppm";
+    const char *fpath = "triangles.ppm";
     Errno e = save_to_ppm_file(pixels, HEIGHT, WIDTH, fpath);
     if (e) {
         fprintf(stderr, "ERROR: unable to save file %s: %d\n", fpath, e);

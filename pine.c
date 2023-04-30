@@ -1,5 +1,26 @@
-#ifndef PINE 
-#define PINE 
+// Copyright 2023 Daniel Illner <illner.daniel@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#ifndef PINE_H 
+#define PINE_H 
 
 #include <stdio.h>
 #include <stdint.h>
@@ -8,17 +29,40 @@
 #include <errno.h>
 #include <math.h>
 
-double rlt(double r) { return 1.0014 + 0.0086 * r - 1.4886 * pow(r, 2) + 0.5344 * pow(r, 3); }
-
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a > b) ? a : b; }
-
 typedef struct {
     uint32_t *pixels;
     size_t width;
     size_t height;
-    /* size_t stride; */
 } Pine_Canvas;
+
+#endif // PINE_H
+
+#ifdef PINE_IMPLEMENTATION 
+
+#define PINE_RED(color)   (((color)&0x000000FF)>>(8*0))
+#define PINE_GREEN(color) (((color)&0x0000FF00)>>(8*1))
+#define PINE_BLUE(color)  (((color)&0x00FF0000)>>(8*2))
+#define PINE_ALPHA(color) (((color)&0xFF000000)>>(8*3))
+#define PINE_RGBA(r, g, b, a) ((((r)&0xFF)<<(8*0)) | (((g)&0xFF)<<(8*1)) | (((b)&0xFF)<<(8*2)) | (((a)&0xFF)<<(8*3)))
+
+void compose_colors(uint32_t *c1, uint32_t c2) 
+{
+    uint32_t r1 = PINE_RED(*c1);
+    uint32_t g1 = PINE_GREEN(*c1);
+    uint32_t b1 = PINE_BLUE(*c1);
+    uint32_t a1 = PINE_ALPHA(*c1);
+
+    uint32_t r2 = PINE_RED(c2);
+    uint32_t g2 = PINE_GREEN(c2);
+    uint32_t b2 = PINE_BLUE(c2);
+    uint32_t a2 = PINE_ALPHA(c2);
+
+    r1 = (r1*(255 - a2) + r2*a2)/255; if (r1 > 255) r1 = 255;
+    g1 = (g1*(255 - a2) + g2*a2)/255; if (g1 > 255) g1 = 255;
+    b1 = (b1*(255 - a2) + b2*a2)/255; if (b1 > 255) b1 = 255;
+
+    *c1 = PINE_RGBA(r1, g1, b1, a1);
+}
 
 void fill(uint32_t *pixels, size_t height, size_t width, uint32_t color)
 {
@@ -27,32 +71,26 @@ void fill(uint32_t *pixels, size_t height, size_t width, uint32_t color)
     }
 }
 
-/**
- * Renders a rectangle in a specific color.
- */
 void fill_rect(uint32_t *p, size_t p_h, size_t p_w, 
                int r_x, 
                int r_y, 
                size_t r_h, 
                size_t r_w, 
-               uint32_t color
-) {
+               uint32_t color) 
+{
     for (size_t i = 0; i < r_h; ++i) {
         int y = r_y + i;
         if (0 <= y && y < p_h) {
             for (size_t j = 0; j < r_w; ++j) {
                 int x = r_x + j;
                 if (0 <= x && x < p_w) {
-                    p[r_y*p_w + r_x + j + i*p_w] = color;
+                    compose_colors(&p[r_y*p_w + r_x + j + i*p_w], color);
                 }
             }
         }
     }
 }
 
-/** 
- * Renders a line with specific color.
- */
 void draw_line_simple(uint32_t *p, size_t h, size_t w,
                int x1, int y1,
                int x2, int y2,
@@ -168,37 +206,29 @@ void draw_line(uint32_t *p, size_t h, size_t w,
     }
 }
 
-/** 
- * Renders a line with specific color.
- */
 void draw_line_aa(uint32_t *p, size_t h, size_t w,
-                    int x1, int y1,
-                    int x2, int y2,
-                    uint32_t color) 
+                  int x1, int y1,
+                  int x2, int y2,
+                  uint32_t color) 
 {
 }
-/** 
- * Renders a triangle with specific color.
- */
+
 void draw_triangle(uint32_t *p, size_t h, size_t w,
-               int x1, int y1,
-               int x2, int y2,
-               int x3, int y3,
-               uint32_t color) 
+                   int x1, int y1,
+                   int x2, int y2,
+                   int x3, int y3,
+                   uint32_t color) 
 { 
     draw_line(p, h, w, x1, y1, x2, y2, color); 
     draw_line(p, h, w, x1, y1, x3, y3, color); 
     draw_line(p, h, w, x2, y2, x3, y3, color); 
 }
 
-/** 
- * renders a triangle with specific color.
- */
 void fill_triangle(uint32_t *p, size_t h, size_t w,
-               int x1, int y1,
-               int x2, int y2,
-               int x3, int y3,
-               uint32_t color) 
+                   int x1, int y1,
+                   int x2, int y2,
+                   int x3, int y3,
+                   uint32_t color) 
 { 
     int xt, yt;
     int xm, ym;
@@ -206,6 +236,7 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     bool f1 = false;
     bool f2 = false;
+    
     // define the top point.
     if (y1 < y2 && y1 < y3) {
         yt = y1;
@@ -244,18 +275,9 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         ym = y3;
     }
 
-    int xstm;
-    int xetm;
-    int ystm;
-    int yetm;
-    int xstd;
-    int xetd;
-    int ystd;
-    int yetd;
-    int xsmd;
-    int xemd;
-    int ysmd;
-    int yemd;
+    int xstm, ystm, xetm, yetm;
+    int xstd, ystd, xetd, yetd;
+    int xsmd, ysmd, xemd, yemd;
 
     // Top triangle
     int ctm;
@@ -463,6 +485,7 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         dmd = (2 * dxmd) - dymd;
     }
     xmd = xd;
+
     // Line from bottom to right middle (top point is used as reference).
     if (abs(yt - yd) >= abs(xt - xd)) {
         xitd = 1;
@@ -471,7 +494,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
             dxtd = -dxtd;
         }
     }
-
     xtd = xd;
     
     // Main Loop for filling the lower triangle.
@@ -530,4 +552,4 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     }
 }
 
-#endif
+#endif // PINE_IMPLEMENTATION  

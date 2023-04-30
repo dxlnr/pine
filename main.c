@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define PINE
+#define PINE_IMPLEMENTATION
 #include "pine.c"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -59,25 +59,9 @@ int main(int argc, char **argv) {
 
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 400, 350, 650, 150, 800, 300, 0x000000);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 100, 550, 200, 500, 300, 550, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 100, 550, 200, 500, 300, 550, 0x000000);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 100, 900, 150, 580, 60, 600, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 100, 900, 150, 580, 60, 600, 0x000000);
-    // Draw a triangle.
-    draw_triangle(pixels, HEIGHT, WIDTH, 400, 400, 500, 650, 400, 700, 0x000000);
-    fill_triangle(pixels, HEIGHT, WIDTH, 400, 400, 500, 650, 400, 700, 0x000000);
-
+    //
+    fill_rect(pixels, HEIGHT, WIDTH, 10, 10, 150, 150, 0xFF750E32); 
+    fill_rect(pixels, HEIGHT, WIDTH, 100, 100, 150, 150, 0xFF5F8783); 
 
     if (strcmp(ff, "png") == 0) {
         if (!stbi_write_png(fpath, WIDTH, HEIGHT, 4, pixels, sizeof(uint32_t)*WIDTH)) {
