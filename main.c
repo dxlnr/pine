@@ -60,11 +60,25 @@ int main(int argc, char **argv) {
     // Set background color.
     fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
     // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
     fill_triangle(pixels, HEIGHT, WIDTH, 200, 150, 400, 100, 320, 320, 0x000000);
     // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
     fill_triangle(pixels, HEIGHT, WIDTH, 400, 350, 650, 150, 800, 300, 0x000000);
-    draw_triangle(pixels, HEIGHT, WIDTH, 400, 350, 650, 150, 800, 300, 0x000000);
-    
+    // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
+    fill_triangle(pixels, HEIGHT, WIDTH, 800, 350, 900, 200, 1000, 350, 0x000000);
+    // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 100, 550, 200, 500, 300, 550, 0x000000);
+    fill_triangle(pixels, HEIGHT, WIDTH, 100, 550, 200, 500, 300, 550, 0x000000);
+    // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 100, 900, 150, 580, 60, 600, 0x000000);
+    fill_triangle(pixels, HEIGHT, WIDTH, 100, 900, 150, 580, 60, 600, 0x000000);
+    // Draw a triangle.
+    draw_triangle(pixels, HEIGHT, WIDTH, 400, 400, 500, 650, 400, 700, 0x000000);
+    fill_triangle(pixels, HEIGHT, WIDTH, 400, 400, 500, 650, 400, 700, 0x000000);
+
+
     if (strcmp(ff, "png") == 0) {
         if (!stbi_write_png(fpath, WIDTH, HEIGHT, 4, pixels, sizeof(uint32_t)*WIDTH)) {
             fprintf(stderr, "ERROR: unable to save file %s\n", fpath);

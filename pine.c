@@ -200,16 +200,12 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                int x3, int y3,
                uint32_t color) 
 { 
-    int xt;
-    int yt;
-    int xm;
-    int ym;
-    int xd;
-    int yd;
+    int xt, yt;
+    int xm, ym;
+    int xd, yd;
 
     bool f1 = false;
     bool f2 = false;
-    bool f3 = false;
     // define the top point.
     if (y1 < y2 && y1 < y3) {
         yt = y1;
@@ -222,7 +218,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     } else {
         yt = y3;
         xt = x3;
-        f3 = true;
     }
     // Define the lowest point.
     if (y1 > y2 && y1 > y3 && !f1) {
@@ -236,7 +231,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     } else {
         yd = y3;
         xd = x3;
-        f3 = true;
     }
     /* // Define the middle left point. */
     if (!f1) { 
@@ -250,8 +244,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         ym = y3;
     }
 
-    printf("m(%d, %d), t(%d, %d), d(%d, %d)\n", xm, ym, xt, yt, xd, yd);
-  
     int xstm;
     int xetm;
     int ystm;
@@ -368,7 +360,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     // Main Loop for filling the top triangle.
     for (int y = yt; y <= ym; ++y) {
-        printf("(top) xtm = %d, xtd = %d\n", xtm, xtd);
         if (xm > xd) {
             for (int x = xtd; x < xtm; ++x) {
                 p[y*w + x] = color;
@@ -386,7 +377,11 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                 ctm = ctm + 1;
             }
             dtm = dtm + (2* (dytm - dxtm));
-            xtm = xtm - ctm;
+            if (xm > xd) {
+                xtm = xtm + ctm;
+            } else {
+                xtm = xtm - ctm;
+            }
         } else {
             if (dtm > 0) {
                 xtm = xtm + xitm;
@@ -402,9 +397,12 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                 dtd = dtd + 2 * dytd;
                 ctd = ctd + 1;
             }
-            printf("here dytd = %d, dxtd = %d, %d\n", dytd, dxtd, (2* (dytd - dxtd)));
             dtd = dtd + (2* (dytd - dxtd));
-            xtd = xtd - ctd;
+            if (xm > xd) {
+                xtd = xtd - ctd;
+            } else {
+                xtd = xtd + ctd;
+            }
         } else {
             if (dtd > 0) {
                 xtd = xtd + xitd;
@@ -478,7 +476,6 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     
     // Main Loop for filling the lower triangle.
     for (int y = yd; y > ym; --y) {
-        printf("(top) xmd = %d, xtd = %d\n", xmd, xtd);
         if (xm > xd) {
             for (int x = xtd; x < xmd; ++x) {
                 p[y*w + x] = color;
