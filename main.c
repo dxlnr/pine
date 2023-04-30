@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define PINE_IMPLEMENTATION
-#include "pine.c"
+#include "pine.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 

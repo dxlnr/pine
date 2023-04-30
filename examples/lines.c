@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <errno.h>
 
-#define PINE
-#include "../pine.c"
+#define PINE_IMPLEMENTATION
+#include "../pine.h"
 
 #define WIDTH 800
 #define HEIGHT 800 

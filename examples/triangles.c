@@ -5,7 +5,7 @@
 #include <errno.h>
 
 #define PINE_IMPLEMENTATION
-#include "../pine.c"
+#include "../pine.h"
 
 #define WIDTH 1280
 #define HEIGHT 960 
