@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     fill(pixels, HEIGHT, WIDTH, 0xFFFFFFFF);
     //
     fill_rect(pixels, HEIGHT, WIDTH, 10, 10, 150, 150, 0xFF750E32); 
-    fill_rect(pixels, HEIGHT, WIDTH, 100, 100, 150, 150, 0xFF5F8783); 
+    fill_rect(pixels, HEIGHT, WIDTH, 100, 100, 150, 150, 0xAA5F8783); 
 
     if (strcmp(ff, "png") == 0) {
         if (!stbi_write_png(fpath, WIDTH, HEIGHT, 4, pixels, sizeof(uint32_t)*WIDTH)) {
