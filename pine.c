@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <errno.h>
 #include <math.h>
 
@@ -205,40 +206,51 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     int ym;
     int xd;
     int yd;
-    
+
+    bool f1 = false;
+    bool f2 = false;
+    bool f3 = false;
     // define the top point.
     if (y1 < y2 && y1 < y3) {
         yt = y1;
         xt = x1;
+        f1 = true;
     } else if (y2 < y1 && y2 < y3) {
         yt = y2;
         xt = x2;
+        f2 = true;
     } else {
         yt = y3;
         xt = x3;
+        f3 = true;
     }
     // Define the lowest point.
-    if (y1 > y2 && y1 > y3) {
+    if (y1 > y2 && y1 > y3 && !f1) {
         yd = y1;
         xd = x1;
-    } else if (y3 > y1 && y3 > y2) {
-        yd = y3;
-        xd = x3;
-    } else {
+        f1 = true;
+    } else if (y2 > y1 && y2 > y3 && !f2 ) {
         yd = y2;
         xd = x2;
-    }
-    // Define the middle left point.
-    if (x2 < x1 && x2 < x3) {
-        ym = y2;
-        xm = x2;
-    } else if (x3 < x1 && x3 < x2) {
-        ym = y3;
-        xm = x3;
+        f2 = true;
     } else {
-        ym = y1;
-        xm = x1;
+        yd = y3;
+        xd = x3;
+        f3 = true;
     }
+    /* // Define the middle left point. */
+    if (!f1) { 
+        xm = x1;
+        ym = y1;
+    } else if (!f2) {
+        xm = x2;
+        ym = y2;
+    } else {
+        xm = x3;
+        ym = y3;
+    }
+
+    printf("m(%d, %d), t(%d, %d), d(%d, %d)\n", xm, ym, xt, yt, xd, yd);
   
     int xstm;
     int xetm;
@@ -313,7 +325,7 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     // Line from top to right middle (down point is used as reference).
     if (abs(yt - yd) < abs(xt - xd)) {
-        if (xm > xt) {
+        if (xd > xt) {
             xstd = xt;
             xetd = xd;
             ystd = yt;
@@ -327,9 +339,11 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
         dxtd = xetd - xstd;
         dytd = yetd - ystd;
 
+        if (dytd < 0) { dytd = -dytd; }
+
         dtd = (2 * dytd) - dxtd;
     } else {
-        if (ym > yt) {
+        if (yd > yt) {
             xstd = xt;
             xetd = xd;
             ystd = yt;
@@ -354,8 +368,15 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     // Main Loop for filling the top triangle.
     for (int y = yt; y <= ym; ++y) {
-        for (int x = xtm; x < xtd; ++x) {
-            p[y*w + x] = color;
+        printf("(top) xtm = %d, xtd = %d\n", xtm, xtd);
+        if (xm > xd) {
+            for (int x = xtd; x < xtm; ++x) {
+                p[y*w + x] = color;
+            }
+        } else {
+            for (int x = xtm; x < xtd; ++x) {
+                p[y*w + x] = color;
+            }
         }
         // top middle left
         if (abs(yt - ym) < abs(xt - xm)) {
@@ -381,6 +402,7 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                 dtd = dtd + 2 * dytd;
                 ctd = ctd + 1;
             }
+            printf("here dytd = %d, dxtd = %d, %d\n", dytd, dxtd, (2* (dytd - dxtd)));
             dtd = dtd + (2* (dytd - dxtd));
             xtd = xtd - ctd;
         } else {
@@ -402,8 +424,8 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
     int ximd;
 
     // Line from bottom to left middle.  
-    if (abs(ym - yd) < abs(xm - xd)) {
-        if (xd > xm) {
+    if (abs(yd - ym) < abs(xd - xm)) {
+        if (xm > xd) {
             xsmd = xd;
             xemd = xm;
             ysmd = yd;
@@ -454,10 +476,17 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
 
     xtd = xd;
     
-    // Main Loop for filling the top triangle.
+    // Main Loop for filling the lower triangle.
     for (int y = yd; y > ym; --y) {
-        for (int x = xmd; x < xtd; ++x) {
-            p[y*w + x] = color;
+        printf("(top) xmd = %d, xtd = %d\n", xmd, xtd);
+        if (xm > xd) {
+            for (int x = xtd; x < xmd; ++x) {
+                p[y*w + x] = color;
+            }
+        } else {
+            for (int x = xmd; x < xtd; ++x) {
+                p[y*w + x] = color;
+            }
         }
         // top middle left
         if (abs(ym - yd) < abs(xm - xd)) {
@@ -467,7 +496,11 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                 cmd = cmd + 1;
             }
             dmd = dmd + (2* (dymd - dxmd));
-            xmd = xmd - cmd;
+            if (xm > xd) {
+                xmd = xmd + cmd;
+            } else {
+                xmd = xmd - cmd;
+            }
         } else {
             if (dmd > 0) {
                 xmd = xmd + ximd;
@@ -484,7 +517,11 @@ void fill_triangle(uint32_t *p, size_t h, size_t w,
                 ctd = ctd + 1;
             }
             dtd = dtd + (2* (dytd - dxtd));
-            xtd = xtd - ctd;
+            if (xm > xd) {
+                xtd = xtd + ctd;
+            } else {
+                xtd = xtd - ctd;
+            }
         } else {
             if (dtd > 0) {
                 xtd = xtd + xitd;
